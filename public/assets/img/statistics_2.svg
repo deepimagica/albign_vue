@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 331.11 146.41">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        stroke: #d6d0d8;
+        stroke-width: 2px;
+      }
+
+      .cls-2, .cls-3 {
+        fill: none;
+      }
+
+      .cls-4 {
+        fill: #d6d0d8;
+      }
+
+      .cls-5 {
+        fill: #e6e1e7;
+      }
+
+      .cls-6 {
+        clip-path: url(#clippath);
+      }
+    </style>
+    <clipPath id="clippath">
+      <rect class="cls-3" x="17.99" y="6.13" width="244.55" height="140.28" rx="18.96" ry="18.96"/>
+    </clipPath>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g id="Group_125" data-name="Group 125">
+      <rect id="Rectangle_29-2" data-name="Rectangle 29-2" class="cls-1" x="17.99" y="6.13" width="244.55" height="140.28" rx="18.96" ry="18.96"/>
+      <rect id="Rectangle_29-2-2" data-name="Rectangle 29-2" class="cls-5" x="17.99" y="6.13" width="244.55" height="140.28" rx="18.96" ry="18.96"/>
+      <g class="cls-6">
+        <g id="Mask_Group_1" data-name="Mask Group 1">
+          <g id="Group_123" data-name="Group 123">
+            <g id="Rectangle_31" data-name="Rectangle 31">
+              <path class="cls-3" d="M194.01,.94h137.05V137.66h-102.45c-19.11,0-34.6-15.49-34.6-34.6h0V.94h0Z"/>
+              <path class="cls-2" d="M194.96,1.89h135.15V136.72h-101.5c-18.58,0-33.65-15.07-33.65-33.65V1.89h0Z"/>
+            </g>
+            <g id="Rectangle_32" data-name="Rectangle 32">
+              <rect class="cls-3" x=".05" y=".05" width="285.25" height="87.91"/>
+              <rect class="cls-2" x="1" y="1" width="283.36" height="86.02"/>
+            </g>
+            <rect id="Rectangle_33" data-name="Rectangle 33" class="cls-4" x="190.41" y="82.11" width="9.48" height="9.48"/>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,41 @@
+{
+    "fontawesome": {
+        "normal": "fontawesome_normal_ca9661a7d1ff862f6c9a0fbc2662445b"
+    },
+    "raleway": {
+        "500": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/raleway_500_fe2bf997392afbd2f8b1b60f808ec42f",
+        "normal": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/raleway_normal_94907ea71db827ac00abf5bff25af46c",
+        "300": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/raleway_300_d9c661612aa130031af46ae78823892c",
+        "500_italic": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/raleway_500_italic_4d9ec32c7171b2a4a8401193a0f7eb8c",
+        "300_italic": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/raleway_300_italic_694bf1d2fbf34934757cc9bbcb10e3a3",
+        "italic": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/raleway_italic_4f88bc13bdd416b77a726b6d659fd54a",
+        "600_italic": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/raleway_600_italic_f21b7c4cb2e0d318a34f01dcd42d87e7",
+        "600": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/raleway_600_2a081af568584a6ba1de1269b111f04f",
+        "100": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/raleway_100_9b2b48caa434ff0826b1060716a43742",
+        "900": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/raleway_900_914be6e0f09b86c62cdccd8bae0b409b",
+        "100_italic": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/raleway_100_italic_ae917837ef59985cf0c6dd7b79f4411d",
+        "900_italic": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/raleway_900_italic_1091250d0f2560039705cd751ac00098",
+        "bold": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/raleway_bold_f63a175d7ebb7b7868d220ec177562c8",
+        "200_italic": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/raleway_200_italic_6dfacc0f59e5016232b631d96b8bb3b5",
+        "bold_italic": "raleway_bold_italic_e43a40f6fe1649b25a284d767c28df79",
+        "200": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/raleway_200_d1f2dc393dca109f31cf04fc9e950ed7"
+    },
+    "poppins": {
+        "900_italic": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/poppins_900_italic_2e1ef103fd50d1819963a788d558d8eb",
+        "bold": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/poppins_bold_13ba5f5e58cd446268ce77b116464794",
+        "900": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/poppins_900_3488eec2e98fa98710b5737380dcbde3",
+        "bold_italic": "poppins_bold_italic_aa4e927fbc86cda0ae650b84a1000003",
+        "200": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/poppins_200_a3570996756e196eb4db879b766b732b",
+        "200_italic": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/poppins_200_italic_b0a448aaf32d0eebec7b9a6b601653d3",
+        "italic": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/poppins_italic_d6d851fdc48a2d41ad5a1270427ed39c",
+        "300": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/poppins_300_574ed4afaaec236e0080bc52175e65fb",
+        "300_italic": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/poppins_300_italic_b129c29bf46999f9ea4bcb442032838c",
+        "500": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/poppins_500_b6c65bf731fec02c8a9b932329159214",
+        "500_italic": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/poppins_500_italic_01a68ed93a2f005bc174e1b624e05bd0",
+        "600": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/poppins_600_fdd139ea12ba2f651e14b32ae368bce7",
+        "normal": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/poppins_normal_aa5b297e168c919c3f6052e28acb90af",
+        "600_italic": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/poppins_600_italic_730c873097c74d041c8eaff52ab8b16c",
+        "100": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/poppins_100_7071b9884448b195679000d4c8050072",
+        "100_italic": "C:\\xampp_new\\htdocs\\project\\newAlbign\\public\\assets\/fonts\/Raleway\/poppins_100_italic_62ac4707a539249550247e2462f2121f"
+    }
+}

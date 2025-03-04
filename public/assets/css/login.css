@@ -1,0 +1,42 @@
+
+
+*{box-sizing: border-box;}
+
+/* Style the input container */
+.input-container {
+  display: flex;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+/* Style the form icons */
+.icon {
+  padding: 15px;
+  background: #2b99d5;
+  color: white;
+  min-width: 50px;
+  text-align: center;
+}
+
+/* Style the input fields */
+.input-field {
+  width: 100%;
+  padding: 10px;
+  outline: none;
+  font-weight: 500;
+  border: none;
+  border-bottom: 2px solid #000;
+}
+
+#logindiv{
+text-align: center; 
+}
+
+#loginimage{
+    width: 200px;margin: 25px 0;    
+}
+
+#loginbutton{
+margin-top: 0px;
+}

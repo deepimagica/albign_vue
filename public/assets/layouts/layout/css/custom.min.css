@@ -1,0 +1,116 @@
+.invoice-box {
+    max-width: 800px;
+    margin: auto;
+    padding: 0px;
+    border: 3px solid #000;
+    font-size: 18px;
+    line-height: 24px;
+    font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+    color: #000;
+}
+.invoice-box .bold {
+    font-weight: 600;
+}
+.invoice-box .text-left {
+    text-align: left !important;
+}
+.invoice-box .text-right {
+    text-align: right !important;
+}
+.invoice-box table {
+    width: 100%;
+    line-height: inherit;
+    text-align: left;
+}
+.invoice-box table td {
+    padding: 5px;
+    vertical-align: top;
+}
+.invoice-box table tr.top td {
+    text-align: center;
+    border-bottom: 3px solid #000;
+}
+.invoice-box table tr.top td h1 {
+    padding: 0px;
+    margin: 10px auto;
+    font-weight: 500;
+}
+.invoice-box table tr.top td .address {
+    margin: 0px auto;
+    width: 550px;
+}
+.invoice-box table tr.title td {
+    text-align: center;
+    border-bottom: 3px solid #000;
+}
+.invoice-box table tr.title td.center {
+    border-right: 1px solid #000;
+    border-left: 1px solid #000;
+}
+.invoice-box table tr.detail td {
+    border-bottom: 3px solid #000;
+    font-size: 16px;
+    line-height: 18px;
+}
+.invoice-box table tr.detail td.third, .invoice-box table tr.item td.third {
+    padding: 0px;
+}
+.invoice-box table tr.detail td.third table tr td {
+    border-bottom: none;
+    border-left: 1px solid #000;
+    padding: 8px 5px;
+    width: 130px;
+    text-align: center;
+}
+.invoice-box table tr.detail td.third table tr:nth-child(1) td {
+    border-bottom: 1px solid #000;
+}
+.invoice-box table tr.details td {
+    border-bottom: 1px solid #000;
+    font-size: 15px;
+    line-height: 16px;
+}
+.invoice-box table tr.details:last-child td {
+    border-bottom: 3px solid #000;
+}
+.invoice-box table tr.details td:nth-child(1) {
+    border-right: 1px solid #000;
+    width: 150px;
+}
+.invoice-box table tr.heading td {
+    background: #eee;
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    font-size: 16px;
+    line-height: 35px;
+    text-align: center;
+}
+.invoice-box table tr.item td {
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    text-align: center;
+    font-size: 16px;
+    line-height: 18px;
+}
+.invoice-box table tr.item.upper td {
+        border-top: 1px solid #000;
+}
+.invoice-box table tr.item:last-child td, .invoice-box table tr.item.blank td {
+    border-bottom: none;
+}
+.invoice-box table tr.item td:last-child, .invoice-box table tr.heading td:last-child {
+    border-right: none;
+    width: 120px;
+}
+.invoice-box table tr.item > td:first-child, .invoice-box table tr.heading > td:first-child {
+    width: 70px;
+}
+.invoice-box table tr.item td.third table tr:last-child td {
+    border-bottom: none;
+}
+.invoice-box table tr.item td.third table tr td:last-child {
+    width: 120px;
+}
+.invoice-box table tr.terms td {
+    font-size: 15px;
+}

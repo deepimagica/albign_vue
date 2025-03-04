@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 513.32 178.83">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        stroke: #cdd9e0;
+        stroke-width: 2px;
+      }
+
+      .cls-2, .cls-3 {
+        fill: none;
+      }
+
+      .cls-4 {
+        fill: #cdd9e0;
+      }
+
+      .cls-5 {
+        opacity: .2;
+      }
+
+      .cls-6 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-7 {
+        fill: #7594b3;
+      }
+    </style>
+    <clipPath id="clippath">
+      <rect class="cls-3" x="41.42" width="244.55" height="140.28" rx="18.96" ry="18.96"/>
+    </clipPath>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g id="Group_126" data-name="Group 126">
+      <rect id="Rectangle_30-2" data-name="Rectangle 30-2" class="cls-1" x="41.42" width="244.55" height="140.28" rx="18.96" ry="18.96"/>
+      <g class="cls-5">
+        <rect id="Rectangle_30-2-2" data-name="Rectangle 30-2" class="cls-7" x="41.42" width="244.55" height="140.28" rx="18.96" ry="18.96"/>
+      </g>
+      <g class="cls-6">
+        <g id="Mask_Group_2" data-name="Mask Group 2">
+          <g id="Rectangle_35" data-name="Rectangle 35">
+            <rect class="cls-3" x="192.68" y="31.2" width="257.92" height="95.27" rx="22.75" ry="22.75"/>
+            <rect class="cls-2" x="193.63" y="32.15" width="256.03" height="93.37" rx="21.8" ry="21.8"/>
+          </g>
+          <g id="Rectangle_36" data-name="Rectangle 36">
+            <rect class="cls-3" x="255.34" y="83.51" width="257.92" height="95.27" rx="22.75" ry="22.75"/>
+            <rect class="cls-2" x="256.29" y="84.46" width="256.03" height="93.37" rx="21.8" ry="21.8"/>
+          </g>
+          <g id="Rectangle_37" data-name="Rectangle 37">
+            <path class="cls-3" d="M257.98,98.78v65.05H.05V76.04H235.23c12.56,0,22.75,10.18,22.75,22.75Z"/>
+            <path class="cls-2" d="M257.03,98.78v64.1H1V76.98H235.23c12.04,0,21.8,9.76,21.8,21.8Z"/>
+          </g>
+          <rect id="Rectangle_38" data-name="Rectangle 38" class="cls-4" x="189.06" y="72.11" width="9.48" height="9.48"/>
+          <rect id="Rectangle_39" data-name="Rectangle 39" class="cls-4" x="251.93" y="121.15" width="9.48" height="9.48"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

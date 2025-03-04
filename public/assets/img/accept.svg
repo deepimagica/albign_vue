@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #14561a;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g id="vuesax_bold_tick-square" data-name="vuesax bold tick-square">
+      <g id="tick-square">
+        <path id="Vector" class="cls-2" d="M16.19,2H7.81c-3.64,0-5.81,2.17-5.81,5.81v8.37c0,3.65,2.17,5.82,5.81,5.82h8.37c3.64,0,5.81-2.17,5.81-5.81V7.81c.01-3.64-2.16-5.81-5.8-5.81Zm.59,7.7l-5.67,5.67c-.29,.29-.77,.29-1.06,0,0,0,0,0,0,0l-2.83-2.83c-.3-.28-.32-.76-.04-1.06s.76-.32,1.06-.04c.01,.01,.03,.02,.04,.04l2.3,2.3,5.14-5.14c.3-.28,.78-.27,1.06,.04,.27,.29,.27,.73,0,1.02Z"/>
+        <path id="Vector-2" class="cls-1" d="M24,24H0V0H24V24Z"/>
+      </g>
+    </g>
+  </g>
+</svg>

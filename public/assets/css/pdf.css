@@ -1,0 +1,34 @@
+body {
+    background:transparent;
+}
+
+.wizard_container .header {
+    text-align: center;
+    font-weight: bold;
+}
+
+.wizard_container .header h2 {
+    padding:20px;
+    text-decoration: underline;
+}
+.wizard_container .body table {
+    padding-top: 25px;
+    width: 100%;
+}
+.wizard_container .body table table {
+    background-color: #e2e2e2;
+    border-radius: 25px;
+}
+.wizard_container .body table tr td {
+    padding-right: 15px;
+}
+
+.wizard_container .body table table tr td {
+    padding: 0 15px;
+}
+
+.page_break { page-break-after: always; }
+
+li.answer {
+    background-color: #fff;
+}
