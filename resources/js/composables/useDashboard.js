@@ -11,13 +11,15 @@ export const useDashboard = () => {
     const surveyType = ref(props.surveyType);
     const doctors = ref(props.doctors);
     const searchQuery = ref("");
+    const surveyId = ref('');
+
 
     const getImagePath = (filename) => {
         return `${baseUrl}/assets/img/${filename}`;
     };
 
     const copyText = (id) => {
-        const inputElement = document.getElementById("doct" + id);        
+        const inputElement = document.getElementById("doct" + id);
         if (inputElement) {
             inputElement.select();
             inputElement.setSelectionRange(0, 99999);
@@ -46,6 +48,14 @@ export const useDashboard = () => {
         });
     };
 
+    const openSurvey = (encryptedId) => {
+        router.visit(`/user/survey/${encryptedId}?is_check=1`, {
+            method: 'get',
+            preserveState: true,
+            preserveScroll: true,
+        });
+    }
+
     const getStatusText = (status) => {
         const statusMap = {
             1: "AM",
@@ -64,55 +74,53 @@ export const useDashboard = () => {
         activeTab.value = type;
         if (surveyType.value !== type) {
             surveyType.value = type;
+            surveyId.value = '';
+            searchQuery.value = '';
             router.post(
                 "/dashboard",
-                { dashboard: type },
+                {
+                    dashboard: type,
+                    survey_id: '',
+                    search: '',
+                },
                 {
                     preserveState: true,
                     preserveScroll: true,
-                    only: ["doctors", "surveyType"],
+                    only: ["doctors", "surveyList", "surveyType"],
                     replace: true,
                 }
             );
         }
+
     };
 
     const reloadSurvey = (event) => {
-        const filter = event.target.value.toUpperCase();
-        const table = document.getElementById("edoc_datatable");
-    
-        if (!table) {
-            console.warn("Table with ID 'edoc_datatable' not found.");
-            return;
-        }
-    
-        const rows = table.getElementsByTagName("tr");
-    
-        for (let i = 0; i < rows.length; i++) {
-            const tdone = rows[i].getElementsByTagName("td")[0];
-            const tdtwo = rows[i].getElementsByTagName("td")[1];
-    
-            if (tdone && tdtwo) {
-                const txtValueOne = tdone.textContent || tdone.innerText;
-                const txtValueTwo = tdtwo.textContent || tdtwo.innerText;
-    
-                if (
-                    txtValueOne.toUpperCase().indexOf(filter) > -1 ||
-                    txtValueTwo.toUpperCase().indexOf(filter) > -1
-                ) {
-                    rows[i].style.display = "";
-                } else {
-                    rows[i].style.display = "none";
-                }
+        surveyId.value = event.target.value;
+        router.post(
+            "/dashboard",
+            {
+                survey_id: surveyId.value,
+                search: searchQuery.value,
+                dashboard: surveyType.value
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                only: ["doctors", "surveyList", "surveyType"],
+                replace: true,
             }
-        }
+        );
     };
-    
+
 
     const fetchDoctors = debounce(() => {
         router.post(
             "/dashboard",
-            { search: searchQuery.value },
+            {
+                search: searchQuery.value,
+                dashboard: surveyType.value,
+                survey_id: surveyId.value,
+            },
             {
                 preserveState: true,
                 preserveScroll: true,
@@ -122,6 +130,7 @@ export const useDashboard = () => {
         );
     }, 300);
 
+
     watch(
         () => usePage().props.doctors,
         (newDoctors) => {
@@ -129,10 +138,20 @@ export const useDashboard = () => {
         }
     );
 
+    watch(() => usePage().props.surveyType, (newType) => {
+        surveyType.value = newType;
+    })
+
+    watch(() => usePage().props.surveyList, (newSurveyList) => {
+        surveyList.value = newSurveyList;
+    });
+
+
     return {
         baseUrl,
         surveyList,
         activeTab,
+        surveyId,
         surveyType,
         doctors,
         searchQuery,
@@ -142,6 +161,7 @@ export const useDashboard = () => {
         fetchDoctors,
         copyText,
         reloadSurvey,
-        openAgreement
+        openAgreement,
+        openSurvey
     };
 };

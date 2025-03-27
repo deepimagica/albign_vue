@@ -1,30 +1,280 @@
-<script setup>
-import { useSurvey } from '@/composables/useSurvey';
+<!-- <script setup>
+import { ref, computed, watch, watchEffect, onMounted } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import TopNav from '../Layout/TopNav.vue';
+import axios from 'axios'
+import { values } from 'lodash';
+
+const props = defineProps({
+    nextQuestion: Object,
+    currentAnswer: Object,
+})
+
+
+const response = usePage().props.response;
+const rangeAnswers = ref([]);
+const numberAnswers = ref([]);
+const questionHtml = ref('');
+const isLast = ref(response.isLast);
+const encryptedQuestionId = ref(response.encryptedQuestionId);
+
 
 const {
     nextQuestion,
     currentAnswer,
-    isLast,
-    encryptedQuestionId,
-    selectedAnswer,
-    selectedAnswerMultiple,
-    otherAnswer,
-    rangeAnswers,
-    numberAnswers,
+    // isLast,
     decryptedDoctorId,
     doc_id,
-    remainingQuestionsCount,
-    questionHistory,
-    isFirstQuestion,
-    parsedAnswers,
-    initializeAnswers,
-    handleNext,
-    handleBack,
-    answerError
-} = useSurvey();
-</script>
+    // encryptedQuestionId,
+    csrf_token,
+} = response;
 
+const csrfToken = csrf_token;
+const selectedAnswer = ref('');
+const selectedAnswerMultiple = ref([]);
+const otherAnswer = ref('');
+const showExtraInput = ref(false);
+
+
+const parsedAnswers = computed(() => {
+    if (!nextQuestion.value) return [];
+    return nextQuestion.value.answers
+        ? nextQuestion.value.answers.split(',').map(a => a.trim())
+        : [];
+});
+
+
+function handleNext() {
+    const form = document.getElementById('survey-form');
+    const formData = new FormData(form);
+    const params = new URLSearchParams();
+
+    let answerValue = "";
+
+    for (const [key, value] of formData.entries()) {
+        if (value.trim() !== "") {
+            if (key === "answer") {
+                answerValue = value;
+            } else {
+                params.append(key, value);
+            }
+        }
+    }
+
+    params.append("answer", answerValue);
+    const encodedData = btoa(unescape(encodeURIComponent(params.toString())));
+
+    axios.post('/survey/store-answer', {
+        encodedData: encodedData
+    }).then(res => {
+        if (res.data.encodedData) {
+            const decoded = JSON.parse(atob(res.data.encodedData));
+            console.log(decoded, "decoded");
+
+            if (decoded.nextQuestion?.id) {
+                encryptedQuestionId.value = decoded.nextQuestion.id;
+            }
+            nextQuestion.value = { ...decoded.nextQuestion };
+            console.log(nextQuestion.value?.type === 1,"tets");
+            
+            currentAnswer.value = { ...decoded.currentAnswer };
+            isLast.value = decoded.isLast;
+        }
+        else if (res.data.redirect_url) {
+            window.location.href = res.data.redirect_url
+        }
+    }).catch(err => {
+        alert('Something went wrong!');
+        console.error(err);
+    });
+}
+
+
+onMounted(() => {
+    if (!nextQuestion?.value || !currentAnswer?.answers) return;
+
+    const answers = currentAnswer.answers.trim();
+
+    console.log("Mounted: Current Answers:", answers);
+
+    // For radio, textarea, dropdown
+    if ([1, 3, 5].includes(nextQuestion.value.type)) {
+        selectedAnswer.value = answers;
+    }
+
+    // For multiple checkboxes
+    if ([2, 4].includes(nextQuestion.value.type)) {
+        selectedAnswerMultiple.value = answers.split(',').map(a => a.trim());
+    }
+
+    // For sliders
+    if (nextQuestion.value.type === 6) {
+        const values = answers.split(',');
+        rangeAnswers.value = parsedAnswers.value.map((_, i) => Number(values[i]) || 0);
+    }
+
+    // For numbers
+    if (nextQuestion.value.type === 7) {
+        const values = answers.split(',');
+        numberAnswers.value = parsedAnswers.value.map((_, i) => Number(values[i]) || 0);
+    }
+});
+
+watchEffect(() => {
+    if (!nextQuestion?.value || !currentAnswer?.answers) return;
+
+    const answers = currentAnswer.answers.trim();
+
+    console.log("watchEffect Triggered: Next Question Updated", nextQuestion.value);
+    console.log("Current Answers:", answers);
+
+    if ([1, 3, 5].includes(nextQuestion.value.type)) {
+        selectedAnswer.value = answers;
+    } else if ([2, 4].includes(nextQuestion.value.type)) {
+        selectedAnswerMultiple.value = answers.split(',').map(a => a.trim());
+    } else if (nextQuestion.value.type === 6) {
+        const values = answers.split(',');
+        rangeAnswers.value = parsedAnswers.value.map((_, i) => Number(values[i]) || 0);
+    } else if (nextQuestion.value.type === 7) {
+        const values = answers.split(',');
+        numberAnswers.value = parsedAnswers.value.map((_, i) => Number(values[i]) || 0);
+    }
+});
+
+
+</script> -->
+<script setup>
+import { ref, computed, watchEffect, onMounted } from 'vue';
+import { usePage } from '@inertiajs/vue3';
+import TopNav from '../Layout/TopNav.vue';
+import axios from 'axios';
+
+const props = defineProps({
+    nextQuestion: Object,
+    currentAnswer: Object,
+});
+
+const response = usePage().props.response;
+const nextQuestion = ref(response.nextQuestion || {});
+const currentAnswer = ref(response.currentAnswer || '');
+const isLast = ref(response.isLast);
+const encryptedQuestionId = ref(response.encryptedQuestionId);
+
+const selectedAnswer = ref('');
+const selectedAnswerMultiple = ref([]);
+const otherAnswer = ref('');
+const rangeAnswers = ref([]);
+const numberAnswers = ref([]);
+const decryptedDoctorId = ref(response.decryptedDoctorId);
+const doc_id = ref(response.doc_id);
+const remainingQuestionsCount = ref(null);
+const csrfToken = response.csrf_token;
+
+const parsedAnswers = computed(() => {
+    if (!nextQuestion.value || !nextQuestion.value.answers) {
+        // console.warn("No answers found for question:", nextQuestion.value);
+        return [];
+    }
+    // console.log("Answers found:", nextQuestion.value.answers);
+    return nextQuestion.value.answers.split(',').map(a => a.trim());
+});
+
+function handleNext() {
+    const form = document.getElementById('survey-form');
+    const formData = new FormData(form);
+    const params = new URLSearchParams();
+
+    let answerValue = "";
+
+    for (const [key, value] of formData.entries()) {
+        if (value.trim() !== "") {
+            if (key === "answer") {
+                answerValue = value;
+            } else {
+                params.append(key, value);
+            }
+        }
+    }
+
+    params.append("answer", answerValue);
+    const encodedData = btoa(unescape(encodeURIComponent(params.toString())));
+
+    axios.post('/survey/store-answer', { encodedData })
+        .then(res => {
+            if (res.data.encodedData) {
+                const decoded = JSON.parse(atob(res.data.encodedData));
+                // console.log("Decoded Response:", decoded);
+                remainingQuestionsCount.value = decoded.remainingQuestionsCount;
+                if (decoded.nextQuestion?.id) {
+                    encryptedQuestionId.value = decoded.nextQuestion.id;
+                    nextQuestion.value = { ...decoded.nextQuestion };
+                } else {
+                    nextQuestion.value = null;
+                }
+                currentAnswer.value = decoded.currentAnswer
+                    ? { answers: String(decoded.currentAnswer) }
+                    : { answers: "" };
+            } else if (res.data.redirect_url) {
+                window.location.href = res.data.redirect_url;
+            }
+        })
+        .catch(err => {
+            alert('Something went wrong!');
+            console.error(err);
+        });
+}
+
+onMounted(() => {
+    if (!nextQuestion.value || !nextQuestion.value.answers) return;
+
+    // console.log("🚀 Mounted: Question Loaded:", nextQuestion.value);
+    // console.log("✅ Initial Answers:", nextQuestion.value.answers);
+
+    if ([1, 3, 5].includes(nextQuestion.value.type)) {
+        selectedAnswer.value = currentAnswer.value?.answers || "";
+    } else if ([2, 4].includes(nextQuestion.value.type)) {
+        selectedAnswerMultiple.value = (currentAnswer.value?.answers || "").split(',').map(a => a.trim());
+    } else if (nextQuestion.value.type === 6) {
+        const values = (currentAnswer.value?.answers || "").split(',');
+        rangeAnswers.value = parsedAnswers.value.map((_, i) => Number(values[i]) || 0);
+    } else if (nextQuestion.value.type === 7) {
+        const values = (currentAnswer.value?.answers || "").split(',');
+        numberAnswers.value = parsedAnswers.value.map((_, i) => Number(values[i]) || 0);
+    }
+});
+
+watchEffect(() => {
+    if (!nextQuestion.value) return;
+    // console.log("watchEffect: Next Question Updated", nextQuestion.value);
+    selectedAnswer.value = "";
+    selectedAnswerMultiple.value = [];
+    // console.log("Current Answer from Response:", currentAnswer.value.answers);
+
+    // Ensure currentAnswer is always an object
+    // if (typeof currentAnswer.value === 'string') {
+    //     currentAnswer.value = { answers: currentAnswer.value };
+    // }
+
+    // console.log("✅ Current Answer from Response:", currentAnswer.value.answers);
+
+    // Ensure the correct answer is selected based on question type
+    if ([1, 5].includes(nextQuestion.value.type)) {
+        selectedAnswer.value = currentAnswer.value?.answers || "";
+    }
+    else if ([2, 4].includes(nextQuestion.value.type)) {
+        selectedAnswerMultiple.value = (currentAnswer.value?.answers || "").split(',').map(a => a.trim());
+    }
+    else if (nextQuestion.value.type === 3) {
+        //  Ensure textarea answers are properly updated  
+        selectedAnswer.value = currentAnswer.value?.answers || "";
+    }
+    else if (nextQuestion.value.type === 6 || nextQuestion.value.type === 7) {
+        const values = (currentAnswer.value?.answers || "").split(',');
+        numberAnswers.value = parsedAnswers.value.map((_, i) => Number(values[i]) || 0);
+    }
+});
+
+</script>
 <template>
     <TopNav />
     <main class="py-4">
@@ -38,10 +288,8 @@ const {
                             <input type="hidden" name="doc_id" :value="decryptedDoctorId">
                             <input type="hidden" name="doctor_id" :value="doc_id">
                             <input type="hidden" name="previous_question" id="previous_question">
-                            <input type="hidden" name="answer" id="answer_single" :value="selectedAnswer">
-                            <input type="hidden" name="answer_multiple" id="answer_multiple"
-                                :value="selectedAnswerMultiple.join(',')">
-
+                            <input type="hidden" name="answer" id="answer" :value="selectedAnswer">
+                            <input type="hidden" name="answer" id="answer" :value="selectedAnswerMultiple.join(',')">
                             <div id="middle-wizard">
                                 <div class="step">
                                     <div class="nine">
@@ -202,7 +450,11 @@ const {
                                                                         <input type="text" name="other_answer"
                                                                             class="form-control" id="extras"
                                                                             placeholder="Type here..."
-                                                                            v-model="otherAnswer">
+                                                                            v-model="otherAnswer"
+                                                                            @change="SetDefault(otherAnswer)"
+                                                                            @keyup="SetDefault(otherAnswer)"
+                                                                            @paste="SetDefault(otherAnswer)"
+                                                                            @input="SetDefault(otherAnswer)">
                                                                     </div>
                                                                 </div>
                                                             </template>
@@ -213,7 +465,11 @@ const {
                                                                 style="width: 50%; margin: 0 auto;">
                                                                 <input type="text" name="other_answer"
                                                                     class="form-control mt-2 custom-input" id="extras"
-                                                                    placeholder="Type here..." v-model="otherAnswer">
+                                                                    placeholder="Type here..." v-model="otherAnswer"
+                                                                    @change="SetDefault(otherAnswer)"
+                                                                    @keyup="SetDefault(otherAnswer)"
+                                                                    @paste="SetDefault(otherAnswer)"
+                                                                    @input="SetDefault(otherAnswer)">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -250,28 +506,27 @@ const {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <p v-if="answerError" class="text-danger text-center mt-3">{{ answerError }}</p>
                                                 </div>
                                                 <div class="left-button-o">
                                                     <div class="col-md-12">
                                                         <div class="row mx-auto justify-content-center">
                                                             <div class="col-md-4">
                                                                 <button type="button" id="prev-button"
-                                                                    class="btn btn-primary btn-q-1 w-100 mt-2"
-                                                                    @click="handleBack" :disabled="isFirstQuestion">
+                                                                    class="btn btn-primary btn-q-1 w-100 mt-2">
                                                                     Back
                                                                 </button>
                                                             </div>
                                                             <div class="col-md-4">
-                                                                <button type="button" id="next-button"
-                                                                    class="btn btn-primary btn-q-1 w-100 mt-2"
-                                                                    @click="handleNext">
-                                                                    {{ remainingQuestionsCount === 1 ? 'SUBMIT' : 'NEXT' }}
+                                                                <button type="submit" id="next-button"
+                                                                    class="btn btn-primary btn-q-1 w-100 mt-2">
+                                                                    {{ remainingQuestionsCount === 1 ? 'SUBMIT' : 'NEXT'
+                                                                    }}
                                                                 </button>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>

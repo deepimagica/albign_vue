@@ -17,8 +17,9 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/jquery-confirm.min.css') }}" />
 
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/css/fengyuanchen.github.io_cropperjs_css_cropper.css') }}" rel="stylesheet"
-        type="text/css" />
+    <link href="{{ asset('assets/css/fengyuanchen.github.io_cropperjs_css_cropper.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+
     <style>
         .inertia-progress-bar {
             display: none !important;

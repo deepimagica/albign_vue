@@ -24,19 +24,18 @@ export const useAgreement = () => {
     const submitForm = (event) => {
         event.preventDefault();
         errors.value = {};
-
-        const formData = Object.fromEntries(
-            new FormData(event.target).entries()
-        );
-
+        const formData = Object.fromEntries(new FormData(event.target).entries());
+        console.log(formData,"forn");
+        
+        const encryptedDoctorId = encryptData({ doctor_id: formData.doctor_id });
+        const base64EncryptedDoctorId = btoa(encryptedDoctorId);
+        const encodedEncryptedDoctorId = encodeURIComponent(base64EncryptedDoctorId);
         const encryptedPayload = encryptData(formData);
-        const doc_id = formData.doctor_id;
-
-        router.post(`/user/agreement/${doc_id}`, { data: encryptedPayload }, {
+        router.post(`/user/agreement/${decodedDoctorId.value}`, { data: encryptedPayload }, {
             onError: (err) => errors.value = err
         });
     };
-    
+
     return {
         response,
         decodedDoctorId,

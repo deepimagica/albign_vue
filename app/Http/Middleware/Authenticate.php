@@ -18,17 +18,17 @@ class Authenticate
             return Inertia::location(route('login'));
         }
 
-        $lastActivity = session('last_activity_time');
-        $timeout = 5;
+        // $lastActivity = session('last_activity_time');
+        // $timeout = 5;
 
-        if ($lastActivity && now()->diffInMinutes($lastActivity) >= $timeout) {
-            Auth::guard('user')->logout();
-            session()->flush();
+        // if ($lastActivity && now()->diffInMinutes($lastActivity) >= $timeout) {
+        //     Auth::guard('user')->logout();
+        //     session()->flush();
 
-            return Inertia::location(route('login'));
-        }
+        //     return Inertia::location(route('login'));
+        // }
 
-        session(['last_activity_time' => now()]);
+        // session(['last_activity_time' => now()]);
 
         return $next($request);
     }

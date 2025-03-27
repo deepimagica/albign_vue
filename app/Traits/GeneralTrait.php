@@ -321,12 +321,12 @@ trait GeneralTrait
     {
         $basePaths = [
             1 => 'assets/img/signature',
-            2 => 'assets/img/document',  
+            2 => 'assets/img/document',
             3 => 'assets/img/usersignature',
         ];
 
         if ($type !== 1) {
-            return null; 
+            return null;
         }
 
         $path = $basePaths[1];
@@ -355,19 +355,24 @@ trait GeneralTrait
         return $file_name;
     }
 
-    public function decryptData($encryptedData)
+    public function decryptData($data)
     {
-        $secretKey = env('VITE_SECRET_KEY');
+        // Base64 decode the input data (since it's Base64-encoded on the frontend)
+        $decodedData = base64_decode($data);
 
-        $secretKey = substr(hash('sha256', $secretKey, true), 0, 16);
+        // Get the same 16-byte key used for encryption on the frontend
+        $secretKey = env('VITE_SECRET_KEY', 'default_secret_123456');
+        $hashedKey = substr(hash('sha256', $secretKey, true), 0, 16); // 128-bit key
 
-        $decodedData = base64_decode($encryptedData);
-        if (!$decodedData) {
-            return null;
-        }
+        // Decrypt the data using AES-128-ECB
+        $decrypted = openssl_decrypt(
+            $decodedData,
+            'AES-128-ECB',
+            $hashedKey,
+            OPENSSL_RAW_DATA
+        );
 
-        $decryptedData = openssl_decrypt($decodedData, 'AES-128-ECB', $secretKey, OPENSSL_RAW_DATA);
-
-        return json_decode($decryptedData, true);
+        // Return the decrypted data (as an array or object, depending on the encryption method used)
+        return json_decode($decrypted, true);
     }
 }

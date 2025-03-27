@@ -14,7 +14,8 @@ const {
     fetchDoctors,
     copyText,
     reloadSurvey,
-    openAgreement
+    openAgreement,
+    openSurvey
 } = useDashboard();
 
 
@@ -54,8 +55,8 @@ const {
                                                             placeholder="Search for names..." @input="fetchDoctors" />
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <select class="form-control" name="survey"
-                                                            @change="reloadSurvey">
+                                                        <select class="form-control" name="surveyType"
+                                                            @change="reloadSurvey" v-model="surveyId">
                                                             <option value="">Select Topic</option>
                                                             <option v-for="survey in surveyList" :key="survey.survey_id"
                                                                 :value="survey.survey_id">
@@ -82,8 +83,7 @@ const {
                                                             :class="'survey_id' + doctor.survey_title">
                                                             <td class="name-of-dr">{{ doctor.name }}</td>
                                                             <td class="name-of-dr">
-                                                                <div
-                                                                    :class="(index % 2 === 0) ? 'titleodd' : 'titleeven'">
+                                                                <div :class="(index % 2 === 0) ? 'titleodd' : 'titleeven'">
                                                                     {{ doctor.survey_title }}
                                                                 </div>
                                                             </td>
@@ -91,14 +91,14 @@ const {
                                                                 <template
                                                                     v-if="doctor.is_accept === 0 && doctor.otp_verified === 0">
                                                                     <template v-if="doctor.is_survey_completed">
-                                                                        <a :href="`${baseUrl}/User/previoussurvey?doctor_id=${btoa(String(doctor.id))}&question_id=0&is_next=1`"
+                                                                        <a href=""
                                                                             title="Click to get survey">
                                                                             <img :src="getImagePath('accept.svg')"
                                                                                 class="icon_logo" alt="Dynamic Icon" />
                                                                         </a>
                                                                     </template>
                                                                     <template v-else-if="doctor.is_agreement_verified">
-                                                                        <a :href="`${baseUrl}/user/survey/${doctor.encrypted_id}?is_check=1`"
+                                                                        <a href="javascript:;" @click.prevent="openSurvey(doctor.encrypted_id)"
                                                                             title="Click to get survey">
                                                                             <!-- <img :src="`${baseUrl}/assets/img/progress.svg`"
                                                                                 class="icon_logo" alt="Dynamic Icon" /> -->
