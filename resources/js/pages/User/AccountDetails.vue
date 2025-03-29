@@ -133,7 +133,7 @@ const cropImage = () => {
 const submitForm = () => {
     // isLoading.value = true;
     form.value.cancel_cheque = croppedImageData.value;
-    console.log("Raw Form Data:", form.value);
+    // console.log("Raw Form Data:", form.value);
     const encryptedPayload = encryptData(form.value);
     router.post(
         `/user/account-details/${form.value.doctor_id}`,

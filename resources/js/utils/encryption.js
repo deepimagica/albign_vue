@@ -14,3 +14,20 @@ export const encryptData = (data) => {
 
     return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
 };
+
+export const decryptData = (encryptedData) => {
+    try {
+        const encrypted = {
+            ciphertext: CryptoJS.enc.Base64.parse(encryptedData)
+        };
+        const decrypted = CryptoJS.AES.decrypt(
+            encrypted,
+            hashedKey,
+            { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 }
+        );
+        return JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
+    } catch (error) {
+        console.error("Decryption failed:", error);
+        throw error;
+    }
+};

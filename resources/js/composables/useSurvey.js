@@ -1,15 +1,16 @@
 import { ref, computed, watchEffect, onMounted } from 'vue';
-import { usePage } from '@inertiajs/vue3';
-import { encryptData } from "@/utils/encryption";
+import { usePage, router } from '@inertiajs/vue3';
+import { encryptData, decryptData } from "@/utils/encryption";
 import axios from 'axios';
 
 export function useSurvey() {
-    const response = usePage().props.response;
+    const response = decryptData(usePage().props.response);
+    // console.log(response,"response");
+
     const nextQuestion = ref(response.nextQuestion || {});
     const currentAnswer = ref(response.currentAnswer || '');
     const isLast = ref(response.isLast);
     const encryptedQuestionId = ref(response.encryptedQuestionId);
-
     const selectedAnswer = ref('');
     const selectedAnswerMultiple = ref([]);
     const otherAnswer = ref('');
@@ -107,14 +108,15 @@ export function useSurvey() {
             return;
         }
 
-        const encryptedData = encryptData(formObject);
-        // console.log("Encrypted Data:", encryptedData);
+        const data = encryptData(formObject);
+        // console.log("Encrypted Data:", data);
 
-        axios.post('/survey/store-answer', { encryptedData })
+        axios.post('/survey/store-answer', { data })
             .then(res => {
                 if (res.data.data) {
                     // console.log(res.data.data,"data");
-                    const decoded = JSON.parse(atob(res.data.data));
+                    // const decoded = JSON.parse(atob(res.data.data));
+                    const decoded = decryptData(res.data.data);
                     remainingQuestionsCount.value = decoded.remainingQuestionsCount;
                     if (decoded.nextQuestion?.id) {
                         if (encryptedQuestionId.value) {
@@ -132,7 +134,8 @@ export function useSurvey() {
                         ? { answers: String(decoded.currentAnswer) }
                         : { answers: "" };
                 } else if (res.data.redirect_url) {
-                    window.location.href = res.data.redirect_url;
+                    // window.location.href = res.data.redirect_url;
+                    router.visit(res.data.redirect_url);
                 }
             })
             .catch(err => {
@@ -148,17 +151,15 @@ export function useSurvey() {
         axios.post('/survey/previous-answer', {
             current_question_id: lastQuestion.id,
             doctor_id: decryptedDoctorId.value
-        })
-            .then(res => {
-                if (res.data.success) {
-                    encryptedQuestionId.value = lastQuestion.id;
-                    nextQuestion.value = res.data.question;
-                    currentAnswer.value = { answers: res.data.answer };
-                }
-            })
-            .catch(err => {
-                console.error("Error fetching previous answer:", err);
-            });
+        }).then(res => {
+            if (res.data.success) {
+                encryptedQuestionId.value = lastQuestion.id;
+                nextQuestion.value = res.data.question;
+                currentAnswer.value = { answers: res.data.answer };
+            }
+        }).catch(err => {
+            console.error("Error fetching previous answer:", err);
+        });
     }
 
     onMounted(() => {
@@ -170,7 +171,7 @@ export function useSurvey() {
             initializeAnswers();
         }
     });
-
+    
     return {
         nextQuestion,
         currentAnswer,

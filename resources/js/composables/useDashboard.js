@@ -112,7 +112,6 @@ export const useDashboard = () => {
         );
     };
 
-
     const fetchDoctors = debounce(() => {
         router.post(
             "/dashboard",
@@ -130,13 +129,9 @@ export const useDashboard = () => {
         );
     }, 300);
 
-
-    watch(
-        () => usePage().props.doctors,
-        (newDoctors) => {
-            doctors.value = newDoctors;
-        }
-    );
+    watch(() => usePage().props.doctors, (newDoctors) => {
+        doctors.value = newDoctors;
+    });
 
     watch(() => usePage().props.surveyType, (newType) => {
         surveyType.value = newType;
@@ -145,7 +140,6 @@ export const useDashboard = () => {
     watch(() => usePage().props.surveyList, (newSurveyList) => {
         surveyList.value = newSurveyList;
     });
-
 
     return {
         baseUrl,

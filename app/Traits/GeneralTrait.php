@@ -375,4 +375,21 @@ trait GeneralTrait
         // Return the decrypted data (as an array or object, depending on the encryption method used)
         return json_decode($decrypted, true);
     }
+
+
+    protected function encryptData($data)
+    {
+        $jsonString = json_encode($data);
+        $secretKey = env('VITE_SECRET_KEY', 'default_secret_123456');
+        $hashedKey = substr(hash('sha256', $secretKey, true), 0, 16);
+
+        $encrypted = openssl_encrypt(
+            $jsonString,
+            'AES-128-ECB',
+            $hashedKey,
+            OPENSSL_RAW_DATA
+        );
+
+        return base64_encode($encrypted);
+    }
 }

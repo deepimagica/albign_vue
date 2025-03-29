@@ -67,7 +67,7 @@ const {
                                                         </div>
                                                     </div> -->
 
-                                                    <div v-if="nextQuestion && nextQuestion.answers"
+                                                    <div v-if="nextQuestion?.type === 1 && nextQuestion.answers"
                                                         class="selectBoxGroup">
                                                         <div v-for="(answer, index) in nextQuestion.answers.split(',')"
                                                             :key="index" class="selectBox radio">

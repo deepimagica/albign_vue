@@ -277,6 +277,7 @@ class DashboardController extends Controller
             ->where('doctor_id', $decryptedDoctorId)
             ->where('question_id', optional($nextQuestion)->id)
             ->first();
+
         $response = [
             'doctor' => $doctor,
             'nextQuestion' => $nextQuestion,
@@ -287,6 +288,9 @@ class DashboardController extends Controller
             'user' => $user,
             'encryptedQuestionId' => $encryptedQuestionId,
         ];
+
+        $response = $this->encryptData($response);
+
         return Inertia::render('User/Survey', [
             'response' => $response
         ]);
@@ -296,7 +300,8 @@ class DashboardController extends Controller
     public function storeAnswer(Request $request)
     {
         try {
-            $decodedData = $this->decryptData($request->encryptedData);
+            // $decodedData = $this->decryptData($request->encryptedData);
+            $decodedData = $this->decryptData($request->data);
             // $decodedData = [];
             // parse_str(utf8_decode(base64_decode($request->encryptedData)), $decodedData);
             // \Log::info('Decoded Survey Data:', $decodedData);
@@ -311,7 +316,7 @@ class DashboardController extends Controller
                 \Log::info('Decryption failed: ' . $e->getMessage());
             }
 
-            $answer = $decodedData['answer'];
+            $answer = $decodedData['answer'] ?? $decodedData['other_answer'];
             $isLast = $decodedData['is_last'];
             $doctor = DB::table('doctors')->where('id', $decryptedDoctorId)->where('is_deleted', 0)->first();
             $survey_id = $doctor->survey_id;
@@ -355,7 +360,8 @@ class DashboardController extends Controller
                     'isLast' => $isLast,
                 ];
 
-                $encodedData = base64_encode(json_encode($dataToEncode));
+                // $encodedData = base64_encode(json_encode($dataToEncode));
+                $encodedData = $this->encryptData($dataToEncode);
 
                 return response()->json([
                     'success' => true,
@@ -363,8 +369,6 @@ class DashboardController extends Controller
                 ]);
             }
             return response()->json(['redirect' => true, 'redirect_url' => route('confirmation', $decodedData['doctor_id'])]);
-            // return redirect()->route('confirmation',$decodedData['doctor_id']);
-            // return redirect()->route('confirmation',['doctor_id' => $decodedData['doctor_id']]);
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
             dd($e);
             return response()->json(['error' => 'Invalid payload', 'message' => $e->getMessage()]);
@@ -509,8 +513,8 @@ class DashboardController extends Controller
                 'name' => 'required|regex:/^[a-zA-Z\s\-\'\.]+$/u|max:80',
                 'mobile' => [
                     'required',
-                    'numeric', // Ensures the value is a number
-                    'digits:10', // Ensures exactly 10 digits
+                    'numeric',
+                    'digits:10',
                     Rule::unique('doctors')->ignore($decryptedDoctorId),
                 ],
 
@@ -522,6 +526,8 @@ class DashboardController extends Controller
                 ],
                 'pin_code' => 'required|regex:/^[0-9]{6}$/',
                 'registration_no' => 'required|max:80',
+            ], [
+                'registration_no.required' => 'The MCI registration no is required'
             ]);
 
             if ($validator->fails()) {
@@ -1065,7 +1071,7 @@ class DashboardController extends Controller
                         ]);
 
                         $encodedSurveyId = Crypt::encryptString($survey_id);
-                        return redirect()->route('survey', ['survey_id' => $encodedSurveyId, 'doctor_id' => $doc_id]);
+                        return redirect()->route('survey.final', ['survey_id' => $encodedSurveyId, 'doctor_id' => $doc_id]);
                     } else {
                         return redirect()->route('verify.mobile', $doc_id)
                             ->withErrors(['otp' => 'The entered OTP is incorrect. Please try again.']);
@@ -1078,5 +1084,39 @@ class DashboardController extends Controller
                 return redirect()->route('verify.mobile', $doc_id);
             }
         }
+    }
+
+    public function getSurveyFinalPage($survey_id, $doctor_id)
+    {
+        $user = Auth::guard('user')->user();
+        $doctor_id = Crypt::decryptString($doctor_id);
+        $decryptedDoctorId = unserialize($doctor_id) ?? (int) $doctor_id;
+        // if (base64_encode(base64_decode($doctor_id, true)) === $doctor_id) {
+        //     // $doctor_id = base64_decode($doctor_id);
+        //     $decryptedDoctorId = Crypt::decryptString($doctor_id);
+        //     $decryptedDoctorId = unserialize($decryptedDoctorId) ?? (int) $decryptedDoctorId;
+        // } else {
+        //     $doctor_id = base64_decode($doctor_id);
+        //     $decryptedDoctorId = Crypt::decryptString($doctor_id);
+        //     $decryptedDoctorId = unserialize($decryptedDoctorId) ?? (int) $decryptedDoctorId;
+        // }
+
+        $survey_id = Crypt::decryptString($survey_id);
+
+
+        $loggedInUser = Auth::guard('user')->user();
+        $survey = DB::table('survey')->where('survey_id', $survey_id)->first();
+
+        $response = [
+            'logged_in' => $loggedInUser,
+            'doctor_id' => $doctor_id,
+            'survey' => $survey ?? null
+        ];
+
+        // return view('user.survey_complete', compact('response', 'user'));
+        return Inertia::render('User/SurveyComplete', [
+            'response' => $response,
+            'user' => $user
+        ]);
     }
 }
