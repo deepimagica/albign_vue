@@ -15,10 +15,9 @@ const {
     copyText,
     reloadSurvey,
     openAgreement,
-    openSurvey
+    openSurvey,
+    openPDF
 } = useDashboard();
-
-
 </script>
 
 <template>
@@ -148,7 +147,7 @@ const {
                                                                 </template>
                                                             </td>
                                                             <td class="agree agree-three">
-                                                                <a target="_blank" title="click to get pdf">
+                                                                <a href="javascript:;" @click.prevent="openPDF(doctor.encrypted_id)" title="click to get pdf">
                                                                     <img :src="getImagePath('pdf.svg')"
                                                                         class="icon_logo" />
                                                                 </a>

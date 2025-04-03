@@ -44,5 +44,5 @@ Route::middleware('auth.user')->group(function () {
     Route::post('user/verify-mobile/{doctor_id}', [DashboardController::class, 'verifyOTP'])->name('verify.otp');
     Route::post('/resend-otp/{doctor_id}', [DashboardController::class, 'resendOtp'])->name('resendOtp');
     Route::get('user/survay-complete/{survey_id}/{doctor_id}', [DashboardController::class, 'getSurveyFinalPage'])->name('survey.final');
-
+    Route::get('/doctor/pdf/{doctor_id}', [DashboardController::class,'getDoctorPDF'])->name('doctor.pdf');
 });

@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Http;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DashboardController extends Controller
 {
@@ -481,6 +482,8 @@ class DashboardController extends Controller
                                     'doctorDetails' => $doctorDetails,
                                     'survey' => $survey,
                                 ];
+                                $data = $this->encryptData($data);
+
                                 return Inertia::render('User/DoctorConfirm', [
                                     'data'  => $data,
                                     'user'  => $user,
@@ -492,7 +495,7 @@ class DashboardController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            dd($e);
+            // dd($e);
             return redirect()->route('admin');
         }
     }
@@ -500,8 +503,8 @@ class DashboardController extends Controller
     public function storeConfirmationData(Request $request, $doctor_id)
     {
         try {
-            // $decodedData = $this->decryptData($request->data);
-            $decodedData = $request->data;
+            $data = $this->decryptData($request->data);
+            $decodedData = $data['data'];
             $user = Auth::guard('user')->user();
             $decryptedDoctorId = $decodedData['doctor_id'];
             $doctor = DB::table('doctors')
@@ -547,17 +550,16 @@ class DashboardController extends Controller
                     'updated_date' => now(),
                 ];
 
-                $data = DB::table('doctors')
+                $final = DB::table('doctors')
                     ->where('id', $decryptedDoctorId)
                     ->update($updateData);
-
                 // return redirect()->route('accountDetail', ['doctor_id' => $decryptedDoctorId]);
-                return redirect()->route('accountDetail', ['doctor_id' => $request->doctor_id]);
+                return redirect()->route('accountDetail', ['doctor_id' => $data['doctor_id']]);
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['success' => false, 'errors' => $e->errors(),], 422);
         } catch (\Exception $e) {
-            // dd($e);
+            dd($e);
             return response()->json(['success' => false, 'message' => 'Something went wrong.', 'redirect_url' => route('confirmation', ['doctor_id' => $doctor_id]), 'error' => $e->getMessage(),], 500);
         }
     }
@@ -620,11 +622,19 @@ class DashboardController extends Controller
 
             if ($survey) {
                 $data['survey'] = (array) $survey;
-                return Inertia::render('User/AccountDetails', [
+                $dataToEncode = [
                     'data' => $data,
                     'user' => $user,
                     'doc_id' => $doc_id,
                     'decodedDoctorId' => $decodedDocId
+                ];
+                $encodedData = $this->encryptData($dataToEncode);
+                return Inertia::render('User/AccountDetails', [
+                    'data' => !empty($data) ? $data : null,
+                    'user' => $user,
+                    'doc_id' => $doc_id,
+                    'decodedDoctorId' => $decodedDocId
+                    // 'data' => $encodedData
                 ]);
             }
             return redirect()->route('dashboard');
@@ -1091,15 +1101,6 @@ class DashboardController extends Controller
         $user = Auth::guard('user')->user();
         $doctor_id = Crypt::decryptString($doctor_id);
         $decryptedDoctorId = unserialize($doctor_id) ?? (int) $doctor_id;
-        // if (base64_encode(base64_decode($doctor_id, true)) === $doctor_id) {
-        //     // $doctor_id = base64_decode($doctor_id);
-        //     $decryptedDoctorId = Crypt::decryptString($doctor_id);
-        //     $decryptedDoctorId = unserialize($decryptedDoctorId) ?? (int) $decryptedDoctorId;
-        // } else {
-        //     $doctor_id = base64_decode($doctor_id);
-        //     $decryptedDoctorId = Crypt::decryptString($doctor_id);
-        //     $decryptedDoctorId = unserialize($decryptedDoctorId) ?? (int) $decryptedDoctorId;
-        // }
 
         $survey_id = Crypt::decryptString($survey_id);
 
@@ -1113,10 +1114,144 @@ class DashboardController extends Controller
             'survey' => $survey ?? null
         ];
 
-        // return view('user.survey_complete', compact('response', 'user'));
         return Inertia::render('User/SurveyComplete', [
             'response' => $response,
             'user' => $user
         ]);
+    }
+
+    public function getDoctorPDF($doctorId)
+    {
+        $user = Auth::guard('user')->user();
+        if (base64_encode(base64_decode($doctorId, true)) === $doctorId) {
+            $doctor_id = base64_decode($doctorId);
+        }
+        $doctor_id = Crypt::decryptString($doctorId);
+        $doctorId = unserialize($doctor_id) ?? (int) $doctor_id;
+
+        $doctor = DB::table('doctors')
+            ->leftJoin('users as u', 'doctors.user_id', '=', 'u.id')
+            ->leftJoin('users as c', 'doctors.user_id', '=', 'c.id')
+            ->leftJoin('users as u1', 'c.parent_employee_code', '=', 'u1.employee_code')
+            ->leftJoin('users as u2', 'u1.parent_employee_code', '=', 'u2.employee_code')
+            ->leftJoin('users as u3', 'u2.parent_employee_code', '=', 'u3.employee_code')
+            ->leftJoin('users as u4', 'u3.parent_employee_code', '=', 'u4.employee_code')
+            ->select(
+                'doctors.*',
+                'u.employee_pos_code as closure_employee_pos_code',
+                'u.fmv_signature as closure_employee_signature',
+                'u.name as closure_name',
+                'c.name as creater_name',
+                'c.employee_pos_code as creater_employee_pos_code',
+                'u1.name as rm_name',
+                'u1.employee_pos_code as rm_employee_pos_code',
+                'u2.name as dm_name',
+                'u2.employee_pos_code as dm_employee_pos_code',
+                'u3.name as sm_name',
+                'u3.employee_pos_code as sm_employee_pos_code',
+                'u4.name as gm_name',
+                'u4.employee_pos_code as gm_employee_pos_code'
+            )
+            ->where('doctors.id', $doctorId)
+            ->first();
+
+        $survey = DB::table('survey')
+            ->leftJoin('financial_years', 'survey.financial_year', '=', 'financial_years.id')
+            ->select('survey.*', 'financial_years.years')
+            ->where('survey_id', $doctor->survey_id)
+            ->first();
+
+        $doctor->pan_card = $this->getBase64Image("assets/img/doctor/document/{$doctor->pan_card}");
+        $doctor->signature = $this->getBase64Image("assets/img/signature/{$doctor->signature}");
+        $doctor->receiving_signature = $this->getBase64Image("assets/img/signature/{$doctor->receiving_signature}");
+        $headSignature = DB::table('headSignature')->where('id', $doctor->head_signature_id)->first();
+        $doctor->head_signature = isset($headSignature->signature)
+            ? $this->getBase64Image("assets/img/doctor/signature/{$headSignature->signature}")
+            : '';
+        $doctor->head_name = $headSignature->employeeName ?? '';
+        $doctor->head_title = $headSignature->employeePosition ?? '';
+        $doctor->head_division = $headSignature->employeeDivision ?? '';
+
+        $doctor->background = $this->getBase64Image("assets/img/background/PDF.jpg");
+
+        $doctor->barcode = $this->fetchBarcodeImage($doctor->barcode);
+
+        $answers = DB::table('answers')->where('doctor_id', $doctorId)->pluck('question_id')->toArray();
+
+        if (!empty($answers)) {
+            $questions = DB::table('questions')
+                ->whereIn('id', $answers)
+                ->where('is_active', 1)
+                ->orderBy('id')
+                ->get();
+
+            foreach ($questions as $question) {
+                $question->answer = DB::table('answers')
+                    ->where('doctor_id', $doctorId)
+                    ->where('question_id', $question->id)
+                    ->value('answers') ?? '';
+            }
+        } else {
+            $questions = [];
+        }
+
+        $institutes = DB::table('doctor_institutes')->where('doctor_id', $doctorId)->get();
+        $doctor->honorarium_in_words = $this->getIndianCurrency($doctor->honorarium);
+
+        $data = [
+            'doctor' => $doctor,
+            'survey' => $survey,
+            'answers' => $questions,
+            'institutes' => $institutes,
+            'user' => $user
+        ];
+
+        $view = 'user.doc_pdf';
+
+        if ($survey->agreement_type == 0) {
+            $view = 'user.doc_pdf_blank';
+        } elseif ($survey->agreement_type == 1) {
+            $view = 'user.doc_cme_pdf_blank';
+        } elseif ($survey->agreement_type == 2) {
+            $view = 'user.doc_adboard_pdf_blank';
+        }
+
+        $pdf = Pdf::loadView($view, $data);
+        $filename = $doctor->barcode
+            ? str_replace(['/', '\\'], '_', $doctor->barcode) . ".pdf"
+            : preg_replace('/[^a-zA-Z0-9]/', '_', $doctor->name) . ".pdf";
+
+        return $pdf->stream($filename);
+    }
+
+    private function getBase64Image($path)
+    {
+        if (empty($path) || trim($path) === 'assets/img/signature/' || trim($path) === 'assets/img/doctor/document/') {
+            return '';
+        }
+
+        $fullPath = public_path(ltrim($path, '/'));
+
+        if (!file_exists($fullPath)) {
+            return '';
+        }
+
+        return 'data:image/png;base64,' . base64_encode(file_get_contents($fullPath));
+    }
+
+
+    private function fetchBarcodeImage($barcode)
+    {
+        $url = "https://barcodeapi.org/api/128/{$barcode}";
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        if ($response) {
+            return 'data:image/png;base64,' . base64_encode($response);
+        }
+        return '';
     }
 }

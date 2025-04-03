@@ -1,24 +1,30 @@
 <script setup>
 import TopNav from "../Layout/TopNav.vue";
-import { ref, defineProps } from 'vue';
-import { router } from '@inertiajs/vue3';
-import { encryptData } from "@/utils/encryption";
+import {  ref, defineProps } from 'vue';
+import { usePage,router } from '@inertiajs/vue3';
+import { encryptData,decryptData } from "@/utils/encryption";
 
 const props = defineProps({
     data: Object,
     decodedDoctorId: String
 });
-// console.log(props.decodedDoctorId,"props");
+
+const decryptedData = decryptData(props.data);
+// console.log(ecryptedData?.doctor?.name,"deded");
+
+
+// const response = decryptData(usePage().props.data);
+// console.log(response,"res");
 
 
 const form = ref({
-    name: props.data?.doctor?.name || '',
-    mobile: props.data?.doctor?.mobile || '',
-    address: props.data?.doctor?.address || '',
-    email: props.data?.doctor?.email || '',
-    pin_code: props.data?.doctor?.pin_code || '',
-    registration_no: props.data?.doctor?.registration_no || '',
-    doctor_id: props.data?.doctor?.id || '',
+    name: decryptedData?.doctor?.name || '',
+    mobile: decryptedData?.doctor?.mobile || '',
+    address: decryptedData?.doctor?.address || '',
+    email: decryptedData?.doctor?.email || '',
+    pin_code: decryptedData?.doctor?.pin_code || '',
+    registration_no: decryptedData?.doctor?.registration_no || '',
+    doctor_id: decryptedData?.doctor?.id || '',
     agree: ''
 });
 
@@ -37,8 +43,11 @@ const submitForm = (agreeStatus) => {
         doctor_id: props.decodedDoctorId 
     };
 
+    const data = encryptData(payload);
     const url = `/user/confirmation/${form.value.doctor_id}`;
-    router.post(url, payload, {
+    console.log(data,"data");
+    
+    router.post(url, { data: data }, {
         onSuccess: () => {
             console.log("Form submitted successfully!");
         },

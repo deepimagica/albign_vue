@@ -25,7 +25,7 @@ export const useAgreement = () => {
         event.preventDefault();
         errors.value = {};
         const formData = Object.fromEntries(new FormData(event.target).entries());
-        console.log(formData,"forn");
+        // console.log(formData,"forn");
         
         const encryptedDoctorId = encryptData({ doctor_id: formData.doctor_id });
         const base64EncryptedDoctorId = btoa(encryptedDoctorId);

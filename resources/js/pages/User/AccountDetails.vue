@@ -126,10 +126,6 @@ const cropImage = () => {
     }
 };
 
-// onMounted(() => {
-//     console.log("Vue is mounted!");
-// });
-
 const submitForm = () => {
     // isLoading.value = true;
     form.value.cancel_cheque = croppedImageData.value;

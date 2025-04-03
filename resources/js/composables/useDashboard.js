@@ -13,7 +13,6 @@ export const useDashboard = () => {
     const searchQuery = ref("");
     const surveyId = ref('');
 
-
     const getImagePath = (filename) => {
         return `${baseUrl}/assets/img/${filename}`;
     };
@@ -47,6 +46,11 @@ export const useDashboard = () => {
             preserveScroll: true,
         });
     };
+
+    const openPDF = (encryptedId) => {
+        const pdfURL = `/doctor/pdf/${encryptedId}`;
+        window.open(pdfURL);
+    }
 
     const openSurvey = (encryptedId) => {
         router.visit(`/user/survey/${encryptedId}?is_check=1`, {
@@ -156,6 +160,7 @@ export const useDashboard = () => {
         copyText,
         reloadSurvey,
         openAgreement,
-        openSurvey
+        openSurvey,
+        openPDF
     };
 };
