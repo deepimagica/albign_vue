@@ -379,15 +379,10 @@ class DashboardController extends Controller
 
     public function getPreviousAnswer(Request $request)
     {
-        $currentQuestionId = $request->current_question_id;
-        $doctorId = $request->doctor_id;
-        // if (is_numeric($currentQuestionId)) {
-        //     $question_id = $request->current_question_id;
-        // } else {
-        //     $decrypted = Crypt::decryptString($currentQuestionId);
-        //     preg_match('/\d+/', $decrypted, $matches);
-        //     $question_id = isset($matches[0]) ? (int) $matches[0] : null;
-        // }
+        $decodedData = $this->decryptData($request->data);
+        $currentQuestionId = $decodedData['current_question_id'];
+        $doctorId = $decodedData['doc_id'];
+        $answer = $decodedData['answer'];
         $decrypted = is_numeric($currentQuestionId) ? $currentQuestionId : Crypt::decryptString($currentQuestionId);
         preg_match('/\d+/', $decrypted, $matches);
         $question_id = isset($matches[0]) ? (int) $matches[0] : null;
@@ -413,10 +408,33 @@ class DashboardController extends Controller
             ->where('question_id', $previousQuestion->id)
             ->value('answers');
 
-        return response()->json([
+        $data = DB::table('answers')
+            ->where('doctor_id', $doctorId)
+            ->where('question_id', $decodedData['previous_que_id'])
+            ->update([
+                'answers' => $answer,
+                'is_next' => 1,
+                'updated_date' => now(),
+            ]);
+
+
+        // return response()->json([
+        //     'success' => true,
+        //     'question' => $previousQuestion,
+        //     'answer' => $previousAnswer ?? ''
+        // ]);
+
+
+        $dataToEncode = [
             'success' => true,
             'question' => $previousQuestion,
             'answer' => $previousAnswer ?? ''
+        ];
+
+        $encodedData = $this->encryptData($dataToEncode);
+        return response()->json([
+            'success' => true,
+            'data' => $encodedData
         ]);
     }
 
@@ -1128,7 +1146,6 @@ class DashboardController extends Controller
         }
         $doctor_id = Crypt::decryptString($doctorId);
         $doctorId = unserialize($doctor_id) ?? (int) $doctor_id;
-
         $doctor = DB::table('doctors')
             ->leftJoin('users as u', 'doctors.user_id', '=', 'u.id')
             ->leftJoin('users as c', 'doctors.user_id', '=', 'c.id')
@@ -1177,14 +1194,12 @@ class DashboardController extends Controller
         $doctor->barcode = $this->fetchBarcodeImage($doctor->barcode);
 
         $answers = DB::table('answers')->where('doctor_id', $doctorId)->pluck('question_id')->toArray();
-
         if (!empty($answers)) {
             $questions = DB::table('questions')
                 ->whereIn('id', $answers)
                 ->where('is_active', 1)
                 ->orderBy('id')
                 ->get();
-
             foreach ($questions as $question) {
                 $question->answer = DB::table('answers')
                     ->where('doctor_id', $doctorId)
@@ -1197,6 +1212,7 @@ class DashboardController extends Controller
 
         $institutes = DB::table('doctor_institutes')->where('doctor_id', $doctorId)->get();
         $doctor->honorarium_in_words = $this->getIndianCurrency($doctor->honorarium);
+        // dd($doctor);
 
         $data = [
             'doctor' => $doctor,
@@ -1207,7 +1223,6 @@ class DashboardController extends Controller
         ];
 
         $view = 'user.doc_pdf';
-
         if ($survey->agreement_type == 0) {
             $view = 'user.doc_pdf_blank';
         } elseif ($survey->agreement_type == 1) {
@@ -1216,7 +1231,13 @@ class DashboardController extends Controller
             $view = 'user.doc_adboard_pdf_blank';
         }
 
-        $pdf = Pdf::loadView($view, $data);
+        // $pdf = Pdf::loadView($view, $data);
+        $pdf = Pdf::loadView($view, $data)
+            ->setOption([
+                'fontDir' => public_path('assets/fonts/Raleway'),
+                'fontCache' => public_path('assets/fonts/Raleway'),
+                'defaultFont' => 'Poppins'
+            ]);
         $filename = $doctor->barcode
             ? str_replace(['/', '\\'], '_', $doctor->barcode) . ".pdf"
             : preg_replace('/[^a-zA-Z0-9]/', '_', $doctor->name) . ".pdf";
@@ -1224,21 +1245,46 @@ class DashboardController extends Controller
         return $pdf->stream($filename);
     }
 
+    // private function getBase64Image($path)
+    // {
+    //     if (empty($path) || trim($path) === 'assets/img/signature/' || trim($path) === 'assets/img/doctor/document/') {
+    //         return '';
+    //     }
+
+    //     $fullPath = public_path(ltrim($path, '/'));
+    //     if (!file_exists($fullPath)) {
+    //         return '';
+    //     }
+
+    //     return 'data:image/png;base64,' . base64_encode(file_get_contents($fullPath));
+    // }
+
     private function getBase64Image($path)
     {
-        if (empty($path) || trim($path) === 'assets/img/signature/' || trim($path) === 'assets/img/doctor/document/') {
+        $path = trim($path);
+
+        if (empty($path) || $path === '/' || substr($path, -1) === '/') {
+            // \Log::debug("Skipped directory path: {$path}");
             return '';
         }
 
         $fullPath = public_path(ltrim($path, '/'));
 
-        if (!file_exists($fullPath)) {
+        if (!is_readable($fullPath)) {
+            // \Log::warning("File not accessible: {$fullPath}");
             return '';
         }
 
-        return 'data:image/png;base64,' . base64_encode(file_get_contents($fullPath));
+        try {
+            $mime = mime_content_type($fullPath);
+            $data = base64_encode(file_get_contents($fullPath));
+            // \Log::debug("Encoded: {$path} ({$mime})");
+            return "data:{$mime};base64,{$data}";
+        } catch (\Exception $e) {
+            \Log::error("Failed encoding {$path}: " . $e->getMessage());
+            return '';
+        }
     }
-
 
     private function fetchBarcodeImage($barcode)
     {

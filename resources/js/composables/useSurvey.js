@@ -90,7 +90,6 @@ export function useSurvey() {
             }
         }
         answerValue = answerValue.replace(/,$/, "");
-
         let formObject = {};
 
         for (const [key, value] of formData.entries()) {
@@ -99,11 +98,12 @@ export function useSurvey() {
 
         answerValue = answerValue.replace(/,$/, "");
 
-        if (
-            (!selectedAnswer.value.trim() && parsedAnswers.value.length > 0) ||
-            (selectedAnswerMultiple.value.length === 0 && nextQuestion.value.type === 2) ||
-            (numberAnswers.value.length === 0 && nextQuestion.value.type === 7)
-        ) {
+        const hasAnswer =
+            answerValue.trim() !== "" ||
+            selectedAnswerMultiple.value.length > 0 ||
+            numberAnswers.value.length > 0;
+
+        if (!hasAnswer && parsedAnswers.value.length > 0) {
             answerError.value = "The answer field is required!";
             return;
         }
@@ -148,14 +148,45 @@ export function useSurvey() {
         if (questionHistory.value.length === 0) return;
         const lastQuestion = questionHistory.value.pop();
 
+        // const formObject = {
+        //     current_question_id: lastQuestion.id,
+        //     doctor_id: decryptedDoctorId.value,
+        //     answer: currentAnswer.value?.answers || "",
+        //     previous_que_id : encryptedQuestionId.value
+        // };
+        // console.log(formObject,"formObject");
+        const form = document.getElementById('survey-form');
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+        let answerValue = "";
+        for (const [key, value] of formData.entries()) {
+            if (key === "answer") {
+                answerValue += value + ",";
+            }
+        }
+        answerValue = answerValue.replace(/,$/, "");
+
+        let formObject = {};
+
+        for (const [key, value] of formData.entries()) {
+            formObject[key] = value.trim() === "" ? null : value;
+        }
+        formObject["current_question_id"] = lastQuestion.id;
+        formObject["previous_que_id"] = encryptedQuestionId.value;
+
+        const encryptedPayload = encryptData(formObject);
+
         axios.post('/survey/previous-answer', {
-            current_question_id: lastQuestion.id,
-            doctor_id: decryptedDoctorId.value
+            data: encryptedPayload
         }).then(res => {
             if (res.data.success) {
-                encryptedQuestionId.value = lastQuestion.id;
-                nextQuestion.value = res.data.question;
-                currentAnswer.value = { answers: res.data.answer };
+                const decoded = decryptData(res.data.data);
+                // console.log(decoded, "decoded");
+                encryptedQuestionId.value = decoded.question.id;
+                nextQuestion.value = { ...decoded.question };
+                currentAnswer.value = decoded.answer
+                    ? { answers: String(decoded.answer) }
+                    : { answers: "" };
             }
         }).catch(err => {
             console.error("Error fetching previous answer:", err);
@@ -171,7 +202,7 @@ export function useSurvey() {
             initializeAnswers();
         }
     });
-    
+
     return {
         nextQuestion,
         currentAnswer,

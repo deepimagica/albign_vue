@@ -47,9 +47,14 @@ export const useDashboard = () => {
         });
     };
 
-    const openPDF = (encryptedId) => {
-        const pdfURL = `/doctor/pdf/${encryptedId}`;
-        window.open(pdfURL);
+    // const openPDF = (encryptedId) => {
+    //     const pdfURL = `/doctor/pdf/${encryptedId}`;
+    //     window.open(pdfURL);
+    // }
+
+    const openPDF = (encId) => {        
+        const pdfURL = `/doctor/pdf/${encId}`;
+        window.open(pdfURL)
     }
 
     const openSurvey = (encryptedId) => {

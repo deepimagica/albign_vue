@@ -17,14 +17,14 @@
         "900_italic": "C:\\xampp_new\\htdocs\\project\\albign_vue\\public\\assets\/fonts\/Raleway\/raleway_900_italic_093ba0ad14e2120dd669db43763932d7",
         "bold": "C:\\xampp_new\\htdocs\\project\\albign_vue\\public\\assets\/fonts\/Raleway\/raleway_bold_bb38eb7b28af607161751c2d23ab4877",
         "200_italic": "C:\\xampp_new\\htdocs\\project\\albign_vue\\public\\assets\/fonts\/Raleway\/raleway_200_italic_87567945fdc8dfcdb65237c289d5b007",
-        "bold_italic": "raleway_bold_italic_66ab0a568fe12f70aa5955ceac9d50b1",
-        "200": "C:\\xampp_new\\htdocs\\project\\albign_vue\\public\\assets\/fonts\/Raleway\/raleway_200_4e9522aded8356c9772d32511f3abfa0"
+        "bold_italic": "C:\\xampp_new\\htdocs\\project\\albign_vue\\public\\assets\/fonts\/Raleway\/raleway_bold_italic_66ab0a568fe12f70aa5955ceac9d50b1",
+        "200": "raleway_200_4e9522aded8356c9772d32511f3abfa0"
     },
     "poppins": {
         "900_italic": "C:\\xampp_new\\htdocs\\project\\albign_vue\\public\\assets\/fonts\/Raleway\/poppins_900_italic_817ebf2c5878e83ebda4eb9ec36e024d",
         "bold": "C:\\xampp_new\\htdocs\\project\\albign_vue\\public\\assets\/fonts\/Raleway\/poppins_bold_abf64e218120de342ab5059b676d5306",
         "900": "C:\\xampp_new\\htdocs\\project\\albign_vue\\public\\assets\/fonts\/Raleway\/poppins_900_628a6d29475484554d01f177685d4cc3",
-        "bold_italic": "poppins_bold_italic_a0194fdd9bca8fc6a245092d1f438fc5",
+        "bold_italic": "C:\\xampp_new\\htdocs\\project\\albign_vue\\public\\assets\/fonts\/Raleway\/poppins_bold_italic_a0194fdd9bca8fc6a245092d1f438fc5",
         "200": "C:\\xampp_new\\htdocs\\project\\albign_vue\\public\\assets\/fonts\/Raleway\/poppins_200_465c0be97d7f242b9a52d9373f359d03",
         "200_italic": "C:\\xampp_new\\htdocs\\project\\albign_vue\\public\\assets\/fonts\/Raleway\/poppins_200_italic_20d24c8d2f304854dd3cbf03df6e8cea",
         "italic": "C:\\xampp_new\\htdocs\\project\\albign_vue\\public\\assets\/fonts\/Raleway\/poppins_italic_78372346d1529b3735f7077920ceebb8",
@@ -36,6 +36,6 @@
         "normal": "C:\\xampp_new\\htdocs\\project\\albign_vue\\public\\assets\/fonts\/Raleway\/poppins_normal_8a47e8dae908993f2e2faeeae3e505e6",
         "600_italic": "C:\\xampp_new\\htdocs\\project\\albign_vue\\public\\assets\/fonts\/Raleway\/poppins_600_italic_4ce9185337e5193f9de0836691942f6e",
         "100": "C:\\xampp_new\\htdocs\\project\\albign_vue\\public\\assets\/fonts\/Raleway\/poppins_100_756d3ce91e8e2449b8fcd9b695398d0d",
-        "100_italic": "C:\\xampp_new\\htdocs\\project\\albign_vue\\public\\assets\/fonts\/Raleway\/poppins_100_italic_0701922a55538ab68a25009e76031e19"
+        "100_italic": "poppins_100_italic_0701922a55538ab68a25009e76031e19"
     }
 }

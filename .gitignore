@@ -17,3 +17,5 @@ yarn-error.log
 /.idea
 /.vscode
 /storage/fonts
+/public/assets/img/doctor
+/public/assets/img/signature
