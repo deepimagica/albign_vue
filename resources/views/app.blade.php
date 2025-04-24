@@ -10,15 +10,37 @@
 
     @vite(['resources/js/app.js'])
 
-    <link href="{{ asset('assets/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/util.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/jquery-confirm.min.css') }}" />
+    {{-- for user css --}}
+    <link href="{{ asset('assets/global/plugins/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet"
+        type="text/css" />
+    @if (!Request::is('admin*'))
+        <link href="{{ asset('assets/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/global/plugins/simple-line-icons/simple-line-icons.min.css') }}" rel="stylesheet"
+            type="text/css" />
+        <link href="{{ asset('assets/global/plugins/simple-line-icons/simple-line-icons.min.css') }}" rel="stylesheet"
+            type="text/css" />
+        <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/util.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/jquery-confirm.min.css') }}" />
 
-    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/css/fengyuanchen.github.io_cropperjs_css_cropper.css') }}" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+        <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/css/fengyuanchen.github.io_cropperjs_css_cropper.css') }}" rel="stylesheet"
+            type="text/css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    @endif
+
+    {{-- for admin css --}}
+    @if (Request::is('admin*'))
+        {{-- <link href="{{ asset('assets/css/admin/font-awesome.min.css') }}" rel="stylesheet" type="text/css" /> --}}
+        {{-- <link href="{{ asset('assets/css/admin/simple-line-icons.min.css') }}" rel="stylesheet" type="text/css" /> --}}
+        <link href="{{ asset('assets/css/admin/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/css/admin/uniform.default.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/css/admin/bootstrap-switch.min.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/pages/css/login.min.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/global/css/components.min.css') }}" rel="stylesheet" id="style_components" type="text/css" />
+        {{-- <link href="{{ asset('assets/global/css/plugins.min.css') }}" rel="stylesheet" type="text/css" /> --}}
+    @endif
 
     <style>
         .inertia-progress-bar {
@@ -28,7 +50,7 @@
 
 </head>
 
-<body>
+<body class="login">
     @inertia
 </body>
 
@@ -46,7 +68,7 @@
         $.confirm({
             title: 'Error',
             content: message,
-            type: 'red', 
+            type: 'red',
             typeAnimated: true,
             buttons: {
                 ok: {

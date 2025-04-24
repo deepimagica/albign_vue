@@ -24,8 +24,7 @@ const { form, showPassword, togglePassword, login } = useLoginForm();
                                     placeholder="Employee Code*" />
                                 <span class="focus-input100"></span>
                             </div>
-                            <span v-if="form.errors.employee_code" class="text-danger pb-2">{{ form.errors.employee_code
-                                }}</span>
+                            <span v-if="form.errors.employee_code" class="text-danger pb-2">{{ form.errors.employee_code }}</span>
                             <div class="wrap-input100 validate-input m-b-12">
                                 <span class="btn-show-pass" @click="togglePassword">
                                     <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>

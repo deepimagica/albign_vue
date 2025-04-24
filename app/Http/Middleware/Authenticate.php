@@ -12,9 +12,13 @@ class Authenticate
     /**
      * Get the path the user should be redirected to when they are not authenticated.
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next, $guard = 'user')
     {
-        if (!Auth::guard('user')->check()) {
+        if (!Auth::guard($guard)->check()) {
+            if ($guard === 'admin') {
+                return Inertia::location(route('admin.login'));
+            }
+
             return Inertia::location(route('login'));
         }
 
