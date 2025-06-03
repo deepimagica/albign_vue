@@ -11,3 +11,4 @@
     <link href="{{ public_path('assets/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ public_path('assets/css/style.css') }}" rel="stylesheet" type="text/css" />
 </head>
+
