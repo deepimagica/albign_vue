@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\DashboadController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\User\DashboardController;
 use Inertia\Inertia;
@@ -49,5 +50,11 @@ Route::middleware('auth.user')->group(function () {
 });
 
 Route::middleware('guest.admin')->prefix('admin')->as('admin.')->group(function () {
-    Route::get('/', [AdminController::class, 'getLoginPage'])->name('login');
+    Route::get('/', [AdminAuthController::class, 'getLoginPage'])->name('login');
+    Route::post('/login', [AdminAuthController::class, 'index'])->name('login.check');
+});
+ 
+ 
+Route::middleware('auth.admin')->prefix('admin')->as('admin.')->group(function () {
+    Route::match(['get', 'post'], 'dashboard', [DashboadController::class,'index'])->name('dashboard');
 });

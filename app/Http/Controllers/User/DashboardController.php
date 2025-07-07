@@ -228,7 +228,6 @@ class DashboardController extends Controller
         if (!$doctor) {
             return redirect()->route('dashboard');
         }
-
         $survey_id = $doctor->survey_id;
         $totalQuestions = DB::table('questions')
             ->where('is_active', 1)
